@@ -5,11 +5,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import com.azure.core.credential.AzureKeyCredential;
 import com.azure.cosmos.CosmosClientBuilder;
+import com.azure.cosmos.DirectConnectionConfig;
 import com.azure.spring.data.cosmos.config.AbstractCosmosConfiguration;
 import com.azure.spring.data.cosmos.repository.config.EnableCosmosRepositories;
+import com.muninn.share.repositories.Repositories;
 
 @Configuration
-@EnableCosmosRepositories
+@EnableCosmosRepositories(basePackageClasses = { Repositories.class })
 public class AppConfiguration extends AbstractCosmosConfiguration {
 
     @Value("${azure.cosmos.uri}")
@@ -27,11 +29,13 @@ public class AppConfiguration extends AbstractCosmosConfiguration {
     private AzureKeyCredential azureKeyCredential;
 
     @Bean
-    public CosmosClientBuilder getCosmosClientBuilder() {
+    CosmosClientBuilder getCosmosClientBuilder() {
         this.azureKeyCredential = new AzureKeyCredential(key);
+        DirectConnectionConfig directConnectionConfig = DirectConnectionConfig.getDefaultConfig();
         return new CosmosClientBuilder()
                 .endpoint(uri)
-                .credential(azureKeyCredential);
+                .credential(azureKeyCredential)
+                .directMode(directConnectionConfig);
     }
 
     public void switchToSecondaryKey() {
