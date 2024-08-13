@@ -1,13 +1,17 @@
 package com.muninn.share;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.format.FormatterRegistry;
+
 import com.azure.core.credential.AzureKeyCredential;
 import com.azure.cosmos.CosmosClientBuilder;
 import com.azure.cosmos.DirectConnectionConfig;
 import com.azure.spring.data.cosmos.config.AbstractCosmosConfiguration;
 import com.azure.spring.data.cosmos.repository.config.EnableCosmosRepositories;
+import com.muninn.share.models.CardTypeConverter;
 import com.muninn.share.repositories.Repositories;
 
 @Configuration
@@ -36,6 +40,11 @@ public class AppConfiguration extends AbstractCosmosConfiguration {
                 .endpoint(uri)
                 .credential(azureKeyCredential)
                 .directMode(directConnectionConfig);
+    }
+
+    @Autowired
+    public void configureConverter(FormatterRegistry registry) {
+        registry.addConverter(new CardTypeConverter());
     }
 
     public void switchToSecondaryKey() {

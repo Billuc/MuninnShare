@@ -1,9 +1,12 @@
 package com.muninn.share.models;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum CardType {
     List("list"),
     Note("note");
 
+    @JsonValue
     private final String text;
 
     /**
