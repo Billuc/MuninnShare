@@ -25,6 +25,9 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
 
+      - name: Debugging
+        run: ls ${{ github.workspace }}/build
+
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
