@@ -25,16 +25,11 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
 
-      - name: Debugging
-        run: ls ${{ github.workspace }}/build/libs
-
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: java-app
-          path: |
-            '${{ github.workspace }}/build/libs/*.jar'
-            '!${{ github.workspace }}/build/libs/*-plain.jar'
+          path: "${{ github.workspace }}/build/libs/*.jar"
 
   deploy:
     runs-on: ubuntu-latest
