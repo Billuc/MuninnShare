@@ -2,6 +2,7 @@ package com.muninn.share.controllers;
 
 import java.util.Optional;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,4 +38,8 @@ public class NoteController {
         return noteRepository.save(new Note(id, update.getTitle(), update.getText()));
     }
 
+    @DeleteMapping("/notes/{id}")
+    public void DeleteNote(@PathVariable(name = "id") String id) {
+        noteRepository.deleteById(id);
+    }
 }

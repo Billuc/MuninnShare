@@ -1,7 +1,9 @@
 package com.muninn.share.controllers;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,9 +30,13 @@ public class ListElementController {
     }
 
     @PostMapping("/lists/{id}/elements")
-    public List<ListElement> UpdateAllListElements(@PathVariable(name = "id") String listId,
+    public List<ListElement> UpdateAllListElements(
+            @PathVariable(name = "id") String listId,
             @RequestBody ListElement[] elements) {
+        List<ListElement> currentElements = listElementRepository.findByListId(listId);
         List<ListElement> updatedElements = new ArrayList<ListElement>(elements.length);
+
+        Stream<Object> elementsToDeleteStream = Arrays.stream(currentElements.toArray());
 
         for (int i = 0; i < elements.length; i++) {
             ListElement currElement = elements[i];
@@ -38,7 +44,12 @@ public class ListElementController {
             updatedElements.add(
                     listElementRepository.save(new ListElement(currElement.getId(), currElement.getTitle(),
                             currElement.getDone(), i, currElement.getParentId(), listId)));
+
+            elementsToDeleteStream = elementsToDeleteStream
+                    .filter((el) -> ((ListElement) el).getId() != currElement.getId());
         }
+
+        elementsToDeleteStream.forEach((el) -> listElementRepository.delete((ListElement) el));
 
         return updatedElements;
     }
@@ -49,7 +60,7 @@ public class ListElementController {
     }
 
     @PostMapping("/list-elements/{id}")
-    public ListElement UpdateList(@PathVariable(name = "id") String id, @RequestBody ListElement update) {
+    public ListElement UpdateListElement(@PathVariable(name = "id") String id, @RequestBody ListElement update) {
         return listElementRepository.save(new ListElement(id, update.getTitle(), update.getDone(), update.getIndex(),
                 update.getParentId(), update.getListId()));
     }

@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface ListElementRepository extends CosmosRepository<ListElement, String> {
     List<ListElement> findByListId(String listId);
+
+    void deleteByListId(String listId);
 }
