@@ -60,9 +60,17 @@ public class ListElementController {
     }
 
     @PostMapping("/list-elements/{id}")
-    public ListElement UpdateListElement(@PathVariable(name = "id") String id, @RequestBody ListElement update) {
-        return listElementRepository.save(new ListElement(id, update.getTitle(), update.getDone(), update.getIndex(),
-                update.getParentId(), update.getListId()));
+    public ListElement UpdateListElement(@PathVariable(name = "id") String id, @RequestBody ListElement.Update update) {
+        ListElement toUpdate = listElementRepository.findById(id).orElseThrow();
+
+        return listElementRepository.save(
+                new ListElement(
+                        id,
+                        update.title().orElse(toUpdate.getTitle()),
+                        update.done().orElse(toUpdate.getDone()),
+                        toUpdate.getIndex(),
+                        toUpdate.getParentId(),
+                        toUpdate.getListId()));
     }
 
 }

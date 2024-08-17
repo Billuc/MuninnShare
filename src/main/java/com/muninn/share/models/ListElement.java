@@ -1,5 +1,7 @@
 package com.muninn.share.models;
 
+import java.util.Optional;
+
 import org.springframework.data.annotation.Id;
 
 import com.azure.spring.data.cosmos.core.mapping.Container;
@@ -50,5 +52,8 @@ public class ListElement {
 
     public String getListId() {
         return listId;
+    }
+
+    public record Update(String id, Optional<String> title, Optional<Boolean> done) {
     }
 }
