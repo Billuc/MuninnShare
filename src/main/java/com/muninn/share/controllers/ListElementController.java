@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -71,6 +72,27 @@ public class ListElementController {
                         toUpdate.getIndex(),
                         toUpdate.getParentId(),
                         toUpdate.getListId()));
+    }
+
+    @DeleteMapping("/list-elements/{id}")
+    public void DeleteListElement(@PathVariable(name = "id") String id) {
+        listElementRepository.deleteById(id);
+    }
+
+    @PostMapping("/list-elements/{parentId}/sort")
+    public void SortListElements(@PathVariable(name = "parentId") String parentId,
+            @RequestBody ListElement[] sortedElements) {
+        for (int i = 0; i < sortedElements.length; i++) {
+            ListElement currElement = sortedElements[i];
+
+            listElementRepository.save(new ListElement(
+                    currElement.getId(),
+                    currElement.getTitle(),
+                    currElement.getDone(),
+                    i,
+                    parentId,
+                    currElement.getListId()));
+        }
     }
 
 }
